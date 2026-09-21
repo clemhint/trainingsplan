@@ -1,13 +1,17 @@
 (function () {
-  const WEEKDAY_ORDER = ["montag", "dienstag", "mittwoch", "donnerstag", "freitag"];
+  const OVERVIEW_ID = "overview";
 
   const tabsEl = document.getElementById("day-tabs");
   const dayHeaderEl = document.getElementById("day-header");
+  const progressWrapEl = document.querySelector(".progress-wrap");
   const exerciseListEl = document.getElementById("exercise-list");
   const progressFillEl = document.getElementById("progress-fill");
   const progressLabelEl = document.getElementById("progress-label");
   const resetBtnEl = document.getElementById("reset-btn");
   const weekOverviewEl = document.getElementById("week-overview");
+  const overviewViewEl = document.getElementById("overview-view");
+  const overviewDaysEl = document.getElementById("overview-days");
+  const principlesListEl = document.getElementById("principles-list");
 
   function todayKey() {
     const d = new Date();
@@ -42,24 +46,35 @@
   }
 
   let activeDayId = localStorage.getItem("trainingsplan_active_day") || jsWeekdayToPlanId() || "montag";
-  if (!TRAININGSPLAN.some((d) => d.id === activeDayId)) activeDayId = "montag";
+  if (activeDayId !== OVERVIEW_ID && !TRAININGSPLAN.some((d) => d.id === activeDayId)) {
+    activeDayId = "montag";
+  }
 
   function setsCountFor(uebung) {
     return uebung.arbeitssaetze;
   }
 
+  function selectDay(id) {
+    activeDayId = id;
+    localStorage.setItem("trainingsplan_active_day", activeDayId);
+    renderTabs();
+    render();
+  }
+
   function renderTabs() {
     tabsEl.innerHTML = "";
+
+    const overviewBtn = document.createElement("button");
+    overviewBtn.className = "day-tab" + (activeDayId === OVERVIEW_ID ? " active" : "");
+    overviewBtn.innerHTML = `Übersicht<span class="tab-sub">Plan &amp; Prinzipien</span>`;
+    overviewBtn.addEventListener("click", () => selectDay(OVERVIEW_ID));
+    tabsEl.appendChild(overviewBtn);
+
     TRAININGSPLAN.forEach((day) => {
       const btn = document.createElement("button");
       btn.className = "day-tab" + (day.id === activeDayId ? " active" : "");
       btn.innerHTML = `${day.tag}<span class="tab-sub">${day.fokus.split(" ")[0]}</span>`;
-      btn.addEventListener("click", () => {
-        activeDayId = day.id;
-        localStorage.setItem("trainingsplan_active_day", activeDayId);
-        renderTabs();
-        renderDay();
-      });
+      btn.addEventListener("click", () => selectDay(day.id));
       tabsEl.appendChild(btn);
     });
   }
@@ -74,6 +89,26 @@
       return `<span class="set-rir-label zero">RIR 0</span>`;
     }
     return `<span class="set-rir-label mid">RIR 1-2</span>`;
+  }
+
+  function rirTextFor(uebung) {
+    return uebung.rir === "conservative" ? "RIR 2-3" : "RIR 1-2 → 0";
+  }
+
+  function render() {
+    const isOverview = activeDayId === OVERVIEW_ID;
+
+    overviewViewEl.hidden = !isOverview;
+    dayHeaderEl.hidden = isOverview;
+    progressWrapEl.hidden = isOverview;
+    exerciseListEl.hidden = isOverview;
+    weekOverviewEl.hidden = isOverview;
+
+    if (isOverview) {
+      renderOverview();
+    } else {
+      renderDay();
+    }
   }
 
   function renderDay() {
@@ -166,6 +201,58 @@
     renderDay();
   });
 
+  function renderOverview() {
+    overviewDaysEl.innerHTML = "";
+    TRAININGSPLAN.forEach((day) => {
+      const section = document.createElement("div");
+      section.className = "overview-day";
+
+      const rows = day.uebungen
+        .map((uebung) => {
+          const arbeitssaetzeText = uebung.arbeitssaetzeText || `${uebung.arbeitssaetze} Arbeitssätze`;
+          return `
+            <div class="overview-exercise-row">
+              <div class="ov-ex-name">
+                ${uebung.name}
+                ${uebung.hinweis ? `<div class="ov-hinweis">${uebung.hinweis}</div>` : ""}
+              </div>
+              <div class="ov-ex-meta">
+                <span class="badge">${uebung.aufwaermsaetze}</span>
+                <span class="badge">${arbeitssaetzeText}</span>
+                <span class="badge">${uebung.wiederholungen} Wdh.</span>
+                <span class="badge badge-rir">${rirTextFor(uebung)}</span>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      section.innerHTML = `
+        <button class="overview-day-header" type="button">
+          <span class="ov-day-title">${day.tag}</span>
+          <span class="ov-day-fokus">${day.fokus}</span>
+        </button>
+        <div class="overview-exercise-list">${rows}</div>
+      `;
+
+      section.querySelector(".overview-day-header").addEventListener("click", () => {
+        selectDay(day.id);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      overviewDaysEl.appendChild(section);
+    });
+
+    principlesListEl.innerHTML = PRINZIPIEN.map(
+      (p) => `
+        <div class="principle-card">
+          <div class="principle-title">${p.titel}</div>
+          <div class="principle-text">${p.text}</div>
+        </div>
+      `
+    ).join("");
+  }
+
   function renderWeekOverview() {
     weekOverviewEl.innerHTML = "";
     const todayId = jsWeekdayToPlanId();
@@ -177,10 +264,7 @@
         <div class="wc-fokus">${day.fokus}</div>
       `;
       card.addEventListener("click", () => {
-        activeDayId = day.id;
-        localStorage.setItem("trainingsplan_active_day", activeDayId);
-        renderTabs();
-        renderDay();
+        selectDay(day.id);
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
       weekOverviewEl.appendChild(card);
@@ -188,6 +272,6 @@
   }
 
   renderTabs();
-  renderDay();
+  render();
   renderWeekOverview();
 })();

@@ -67,3 +67,27 @@ const TRAININGSPLAN = [
     ]
   }
 ];
+
+// Generelle Prinzipien, die für den gesamten Plan gelten
+const PRINZIPIEN = [
+  {
+    titel: "Satzschema",
+    text: "Grundübungen mit freien Gewichten/hoher Last = 4 Arbeitssätze, Isolationsübungen = 3 Arbeitssätze (Ausnahmen: Deadlift Di 3S/Fr 2S, Beinbeuger 2S, Waden 3-4S)."
+  },
+  {
+    titel: "RIR-Abstufung",
+    text: "Erster Arbeitssatz RIR 1-2, letzter Arbeitssatz RIR 0 (Ausnahme Squats: durchgehend RIR 2-3)."
+  },
+  {
+    titel: "Aufwärmsätze",
+    text: "Basieren auf dem jeweiligen Arbeitsgewicht, nicht auf einem theoretischen Maximum."
+  },
+  {
+    titel: "Morgentraining",
+    text: "Kurzes allgemeines Aufwärmen (2-5 Minuten Stepper/Ergometer) vor der ersten Übung, plus Flüssigkeitszufuhr nach dem Aufstehen."
+  },
+  {
+    titel: "Cardio",
+    text: "Ist bewusst nicht Teil dieser Planung."
+  }
+];

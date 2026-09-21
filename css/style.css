@@ -19,6 +19,8 @@
 
 * { box-sizing: border-box; }
 
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   padding: 0;
@@ -269,6 +271,124 @@ main {
 .set-rir-label.cons {
   color: var(--rir-cons);
   background: var(--rir-cons-bg);
+}
+
+.overview-view {
+  margin-top: 4px;
+}
+
+.overview-days {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.overview-day {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.overview-day-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  background: none;
+  border: none;
+  color: var(--text);
+  padding: 14px 16px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+}
+
+.overview-day-header:hover {
+  background: var(--bg-elevated);
+}
+
+.ov-day-title {
+  font-weight: 700;
+  font-size: 1rem;
+  flex: 0 0 auto;
+}
+
+.ov-day-fokus {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  text-align: right;
+}
+
+.overview-exercise-list {
+  border-top: 1px solid var(--border);
+}
+
+.overview-exercise-row {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.overview-exercise-row:first-child {
+  border-top: none;
+}
+
+.ov-ex-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.ov-ex-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.badge-rir {
+  color: var(--text);
+  border-color: rgba(224, 90, 79, 0.35);
+}
+
+.ov-hinweis {
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  margin-top: 2px;
+}
+
+.principles-title {
+  margin: 24px 0 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.principles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.principle-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.principle-title {
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin-bottom: 4px;
+}
+
+.principle-text {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.45;
 }
 
 .week-overview {

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>Trainingsplan</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Trainingsplan</h1>
+      <nav class="day-tabs" id="day-tabs"></nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="day-header" id="day-header"></div>
+
+    <div class="progress-wrap">
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-label" id="progress-label">
+        <span class="progress-text">0 / 0 Sätze erledigt (0%)</span>
+        <button class="reset-btn" id="reset-btn">Zurücksetzen</button>
+      </div>
+    </div>
+
+    <div class="exercise-list" id="exercise-list"></div>
+
+    <div class="week-overview" id="week-overview"></div>
+  </main>
+
+  <footer>
+    Tippe auf einen Satz, um ihn als erledigt zu markieren. Der Fortschritt wird lokal in deinem Browser gespeichert und täglich zurückgesetzt.
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

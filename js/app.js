@@ -45,6 +45,64 @@
     }
   }
 
+  // Arbeitsgewicht pro Übung - bleibt erhalten (kein Tages-Reset), damit man
+  // sieht, welches Gewicht beim letzten Mal verwendet wurde.
+  function weightStorageKey(dayId, uIdx) {
+    return `trainingsplan_weight_${dayId}_${uIdx}`;
+  }
+
+  function loadWeight(dayId, uIdx) {
+    try {
+      const raw = localStorage.getItem(weightStorageKey(dayId, uIdx));
+      return raw === null ? "" : raw;
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function saveWeight(dayId, uIdx, value) {
+    try {
+      const key = weightStorageKey(dayId, uIdx);
+      if (value === "" || value === null) {
+        localStorage.removeItem(key);
+      } else {
+        localStorage.setItem(key, value);
+      }
+    } catch (e) {
+      /* localStorage nicht verfügbar - Gewicht wird nur für diese Sitzung gehalten */
+    }
+  }
+
+  function weightInputHtml(dayId, uIdx) {
+    const value = loadWeight(dayId, uIdx);
+    return `
+      <label class="weight-field">
+        <span class="weight-label">Gewicht</span>
+        <input
+          type="number"
+          inputmode="decimal"
+          step="0.5"
+          min="0"
+          placeholder="kg"
+          class="weight-input"
+          data-ex="${uIdx}"
+          value="${value}"
+        />
+        <span class="weight-unit">kg</span>
+      </label>
+    `;
+  }
+
+  function bindWeightInputs(container, dayId) {
+    container.querySelectorAll(".weight-input").forEach((input) => {
+      input.addEventListener("change", () => {
+        const uIdx = Number(input.dataset.ex);
+        const value = input.value.trim();
+        saveWeight(dayId, uIdx, value);
+      });
+    });
+  }
+
   let activeDayId = localStorage.getItem("trainingsplan_active_day") || jsWeekdayToPlanId() || "montag";
   if (activeDayId !== OVERVIEW_ID && !TRAININGSPLAN.some((d) => d.id === activeDayId)) {
     activeDayId = "montag";
@@ -155,6 +213,7 @@
         </div>
         ${uebung.hinweis ? `<div class="hinweis">${uebung.hinweis}</div>` : ""}
         <div class="sets-row">${setsHtml}</div>
+        ${weightInputHtml(day.id, uIdx)}
       `;
 
       exerciseListEl.appendChild(card);
@@ -176,6 +235,8 @@
         renderDay();
       });
     });
+
+    bindWeightInputs(exerciseListEl, day.id);
 
     updateProgressBar(day);
   }
@@ -208,7 +269,7 @@
       section.className = "overview-day";
 
       const rows = day.uebungen
-        .map((uebung) => {
+        .map((uebung, uIdx) => {
           const arbeitssaetzeText = uebung.arbeitssaetzeText || `${uebung.arbeitssaetze} Arbeitssätze`;
           return `
             <div class="overview-exercise-row">
@@ -222,6 +283,7 @@
                 <span class="badge">${uebung.wiederholungen} Wdh.</span>
                 <span class="badge badge-rir">${rirTextFor(uebung)}</span>
               </div>
+              ${weightInputHtml(day.id, uIdx)}
             </div>
           `;
         })
@@ -239,6 +301,8 @@
         selectDay(day.id);
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
+
+      bindWeightInputs(section, day.id);
 
       overviewDaysEl.appendChild(section);
     });

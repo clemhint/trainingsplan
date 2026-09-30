@@ -217,6 +217,48 @@ main {
   margin-top: 12px;
 }
 
+.weight-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  cursor: text;
+}
+
+.weight-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.weight-input {
+  width: 70px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: right;
+  -moz-appearance: textfield;
+}
+
+.weight-input::-webkit-outer-spin-button,
+.weight-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.weight-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.weight-unit {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
 .set-toggle {
   display: flex;
   flex-direction: column;
